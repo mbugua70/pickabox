@@ -549,6 +549,15 @@
 }
 
 .game-complete {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(8px);
   animation: complete-in 0.4s ease forwards;
 }
 

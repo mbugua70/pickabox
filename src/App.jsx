@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import Box from './components/Box'
 import ConfirmModal from './components/ConfirmModal'
@@ -18,7 +18,19 @@ export default function App() {
   })
 
   // Local session state: tracks correct/wrong for boxes answered this session
-  const [boxStates, setBoxStates] = useState({})
+  const [boxStates, setBoxStates] = useState(() => {
+    try {
+      const saved = localStorage.getItem('picker_box_states')
+      return saved ? JSON.parse(saved) : {}
+    } catch {
+      return {}
+    }
+  })
+
+  // Persist boxStates to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('picker_box_states', JSON.stringify(boxStates))
+  }, [boxStates])
 
   // Box waiting for confirmation (step 1 of 2)
   const [pendingBox, setPendingBox] = useState(null)
