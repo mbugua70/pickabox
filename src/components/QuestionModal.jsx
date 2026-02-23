@@ -34,40 +34,45 @@ export default function QuestionModal({ question, onAnswer, onClose }) {
       aria-labelledby="modal-question"
     >
       <div className="modal-card">
-        <div className="modal-header">
-          <span className="modal-box-label">Box {question.id}</span>
-        </div>
 
-        <p id="modal-question" className="modal-question">
-          {question.question}
-        </p>
-
-        <div className="modal-options" role="group" aria-label="Answer options">
-          {OPTION_KEYS.map((key) => (
-            <button
-              key={key}
-              className={getOptionClass(key)}
-              onClick={() => handleSelect(key)}
-              disabled={hasAnswered}
-              aria-pressed={selectedAnswer === key}
-            >
-              <span className="option-letter">{key}</span>
-              <span className="option-text">{question.answers[key]}</span>
-            </button>
-          ))}
-        </div>
-
-        {hasAnswered && (
-          <div className={`modal-result modal-result-${selectedAnswer === question.correct ? 'correct' : 'wrong'}`}>
-            {resultMessage}
+        <div className="modal-question-section">
+          <div className="modal-header">
+            <span className="modal-box-label">Box {question.id}</span>
           </div>
-        )}
+          <p id="modal-question" className="modal-question">
+            {question.question}
+          </p>
+        </div>
 
-        {hasAnswered && (
-          <button className="continue-btn" onClick={onClose} autoFocus>
-            Continue
-          </button>
-        )}
+        <div className="modal-answers-section">
+          <div className="modal-options" role="group" aria-label="Answer options">
+            {OPTION_KEYS.map((key) => (
+              <button
+                key={key}
+                className={getOptionClass(key)}
+                onClick={() => handleSelect(key)}
+                disabled={hasAnswered}
+                aria-pressed={selectedAnswer === key}
+              >
+                <span className="option-letter">{key}</span>
+                <span className="option-text">{question.answers[key]}</span>
+              </button>
+            ))}
+          </div>
+
+          {hasAnswered && (
+            <div className={`modal-result modal-result-${selectedAnswer === question.correct ? 'correct' : 'wrong'}`}>
+              {resultMessage}
+            </div>
+          )}
+
+          {hasAnswered && (
+            <button className="continue-btn" onClick={onClose} autoFocus>
+              Continue
+            </button>
+          )}
+        </div>
+
       </div>
     </div>
   )

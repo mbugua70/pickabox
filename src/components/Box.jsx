@@ -1,5 +1,5 @@
 export default function Box({ index, state, onClick }) {
-  const isAnswered = state === 'correct' || state === 'wrong'
+  const isAnswered = state === 'correct' || state === 'wrong' || state === 'done'
 
   const handleClick = () => {
     if (!isAnswered) onClick(index)
@@ -34,7 +34,7 @@ export default function Box({ index, state, onClick }) {
 
         {isAnswered && (
           <div className={`box-result-overlay box-result-${state}`}>
-            {state === 'correct' ? '✓' : '✗'}
+            {state === 'correct' ? '✓' : state === 'wrong' ? '✗' : '✓'}
           </div>
         )}
       </div>
