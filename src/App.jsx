@@ -84,13 +84,12 @@ export default function App() {
       [selectedBox]: isCorrect ? 'correct' : 'wrong',
     }))
 
-    openBox(question.question_id)
-      .catch(console.error)
-      .finally(() => refetch())
+    openBox(question.question_id).catch(console.error)
   }
 
   const handleCloseModal = () => {
     setSelectedBox(null)
+    refetch()
   }
 
   // Reset: show the confirmation modal
