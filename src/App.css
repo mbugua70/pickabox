@@ -1,12 +1,12 @@
 /* ==========================================================================
    PICK A BOX — SDG Challenge
-   Background strategy: the source image is lower-resolution than its filename
-   suggests, so we apply CSS blur to the ::before layer to intentionally soften
-   the artefacts, then darken it.  The game UI sits above and stays razor-sharp.
+   Designed primarily for 1920×1080, scales down to tablet/mobile.
+   All key sizes use clamp(mobile-min, vw/vh-fluid, desktop-max) so the
+   layout fills a big screen without overflowing on small ones.
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
-   GAME CONTAINER — full-screen stage
+   GAME CONTAINER
    -------------------------------------------------------------------------- */
 .game-container {
   position: relative;
@@ -17,11 +17,11 @@
   flex-direction: column;
 }
 
-/* Blurred background layer — hides low-res artefacts, keeps colour mood */
+/* Blurred background — intentional blur hides low-res source artefacts */
 .game-container::before {
   content: '';
   position: absolute;
-  inset: -24px; /* compensate for blur edge fade */
+  inset: -24px;
   background-image: url('/background_1920x1080.png');
   background-size: cover;
   background-position: center top;
@@ -30,22 +30,22 @@
   z-index: 0;
 }
 
-/* Subtle vignette overlay for depth */
+/* Vignette */
 .game-container::after {
   content: '';
   position: absolute;
   inset: 0;
   background: radial-gradient(
     ellipse at center,
-    transparent 40%,
-    rgba(0, 10, 4, 0.55) 100%
+    transparent 35%,
+    rgba(0, 8, 3, 0.6) 100%
   );
   z-index: 1;
   pointer-events: none;
 }
 
 /* --------------------------------------------------------------------------
-   GAME CONTENT — sits above background layers
+   GAME CONTENT
    -------------------------------------------------------------------------- */
 .game-content {
   position: relative;
@@ -55,8 +55,9 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  padding: 2.5rem 2rem 3rem;
-  gap: 2.5rem;
+  /* Fluid padding: tight on mobile, generous on 1080p */
+  padding: clamp(1.5rem, 4vh, 5rem) clamp(1.5rem, 4vw, 6rem);
+  gap: clamp(1.5rem, 3vh, 3.5rem);
 }
 
 /* --------------------------------------------------------------------------
@@ -66,41 +67,49 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.5rem;
+  gap: clamp(0.75rem, 1.5vh, 1.8rem);
   text-align: center;
+}
+
+.header-titles {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(0.4rem, 0.8vh, 0.9rem);
 }
 
 .game-eyebrow {
   font-family: 'ProximaNova', sans-serif;
   font-weight: 300;
-  font-size: clamp(0.7rem, 1.5vw, 0.9rem);
-  letter-spacing: 0.25em;
+  /* 1920px → 1.4vw = 26.9px, capped at 1.1rem fallback for smaller */
+  font-size: clamp(0.75rem, 1.1vw, 1.3rem);
+  letter-spacing: 0.28em;
   text-transform: uppercase;
   color: var(--saf-green);
-  opacity: 0.9;
 }
 
 .game-title {
   font-family: 'ProximaNova', sans-serif;
   font-weight: 700;
-  font-size: clamp(2.2rem, 6vw, 4.5rem);
+  /* 1920px → 7vw = 134px, capped at 7rem = 112px */
+  font-size: clamp(2.5rem, 7vw, 7rem);
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: #ffffff;
   text-shadow:
-    0 0 40px var(--saf-green-glow),
-    0 0 80px rgba(0, 166, 81, 0.3),
-    0 3px 6px rgba(0, 0, 0, 0.6);
+    0 0 50px var(--saf-green-glow),
+    0 0 100px rgba(0, 166, 81, 0.25),
+    0 4px 8px rgba(0, 0, 0, 0.65);
   line-height: 1;
-  margin: 0.1rem 0;
 }
 
 .game-subtitle {
   font-family: 'ProximaNova', sans-serif;
   font-weight: 300;
-  font-size: clamp(0.85rem, 2vw, 1.1rem);
+  /* 1920px → 1.6vw = 30.7px, capped at 1.4rem */
+  font-size: clamp(0.9rem, 1.3vw, 1.5rem);
   color: rgba(255, 255, 255, 0.7);
-  letter-spacing: 0.06em;
+  letter-spacing: 0.07em;
 }
 
 /* --------------------------------------------------------------------------
@@ -109,11 +118,11 @@
 .score-tracker {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  gap: clamp(1rem, 2vw, 2.5rem);
   background: rgba(0, 0, 0, 0.45);
   border: 1px solid rgba(0, 166, 81, 0.35);
   border-radius: 50px;
-  padding: 0.6rem 2rem;
+  padding: clamp(0.5rem, 0.8vh, 0.9rem) clamp(1.2rem, 2.5vw, 3rem);
   backdrop-filter: blur(8px);
 }
 
@@ -121,43 +130,46 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.1rem;
+  gap: 0.15rem;
 }
 
 .score-num {
   font-family: 'ProximaNova', sans-serif;
   font-weight: 700;
-  font-size: 1.3rem;
+  font-size: clamp(1.2rem, 1.8vw, 2.2rem);
   line-height: 1;
 }
 
 .score-correct .score-num { color: var(--saf-green); }
-.score-total .score-num { color: var(--saf-gold); }
+.score-total .score-num   { color: var(--saf-gold); }
 
 .score-label {
   font-family: 'ProximaNova', sans-serif;
   font-weight: 300;
-  font-size: 0.65rem;
-  letter-spacing: 0.12em;
+  font-size: clamp(0.6rem, 0.7vw, 0.85rem);
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .score-sep {
   width: 1px;
-  height: 2rem;
+  height: clamp(1.8rem, 3vh, 3rem);
   background: rgba(255, 255, 255, 0.18);
 }
 
 /* --------------------------------------------------------------------------
-   BOXES GRID — 5 columns × 2 rows
+   BOXES GRID — 5 × 2
+   At 1920px: max-width 1440px → each box ≈ 268px wide
    -------------------------------------------------------------------------- */
 .boxes-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 1.25rem;
+  /* Fluid gap: 12px on mobile → 28px on 1920p */
+  gap: clamp(0.75rem, 1.5vw, 1.75rem);
   width: 100%;
-  max-width: 860px;
+  /* Fill most of the 1920px viewport */
+  max-width: min(1440px, 92vw);
 }
 
 /* --------------------------------------------------------------------------
@@ -170,54 +182,47 @@
   align-items: center;
   cursor: pointer;
   outline: none;
-  /* GPU-accelerated transitions */
   transition: transform 0.22s ease, filter 0.22s ease;
   will-change: transform;
 }
 
-/* Idle hover */
 .box-wrapper.box-state-idle:hover,
 .box-wrapper.box-state-idle:focus-visible {
-  transform: translateY(-9px) scale(1.06);
-  filter: drop-shadow(0 12px 22px rgba(0, 166, 81, 0.65));
+  transform: translateY(-10px) scale(1.06);
+  filter: drop-shadow(0 14px 26px rgba(0, 166, 81, 0.7));
 }
 
-/* Active press */
 .box-wrapper.box-state-idle:active {
-  transform: translateY(-3px) scale(0.98);
+  transform: translateY(-3px) scale(0.97);
 }
 
-/* Answered states */
 .box-wrapper.box-state-correct,
 .box-wrapper.box-state-wrong {
   cursor: default;
   opacity: 0.6;
-  transform: none;
-  filter: none;
 }
 
-/* Index badge — top-left corner */
+/* Index badge — scales with viewport so it's always readable */
 .box-index-badge {
   position: absolute;
-  top: -8px;
-  left: -8px;
+  top: clamp(-6px, -0.5vw, -10px);
+  left: clamp(-6px, -0.5vw, -10px);
   z-index: 2;
-  width: 26px;
-  height: 26px;
+  width: clamp(24px, 2vw, 40px);
+  height: clamp(24px, 2vw, 40px);
   border-radius: 50%;
   background: var(--saf-gold);
-  color: #1a1a00;
+  color: #1a1400;
   font-family: 'ProximaNova', sans-serif;
   font-weight: 700;
-  font-size: 0.72rem;
+  font-size: clamp(0.6rem, 0.85vw, 1rem);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.55);
   line-height: 1;
 }
 
-/* Box image */
 .box-image-container {
   position: relative;
   width: 100%;
@@ -238,7 +243,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: clamp(1.4rem, 3vw, 2rem);
+  font-size: clamp(1.6rem, 3.5vw, 3.5rem);
   font-weight: 700;
   border-radius: 6px;
 }
@@ -246,27 +251,21 @@
 .box-result-correct {
   background: rgba(0, 166, 81, 0.55);
   color: #ffffff;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
 }
 
 .box-result-wrong {
   background: rgba(229, 48, 48, 0.55);
   color: #ffffff;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
 }
 
 /* --------------------------------------------------------------------------
    QUESTION MODAL
    -------------------------------------------------------------------------- */
 @keyframes modal-in {
-  from {
-    opacity: 0;
-    transform: scale(0.9) translateY(16px);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
+  from { opacity: 0; transform: scale(0.9) translateY(16px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
 }
 
 .modal-backdrop {
@@ -277,64 +276,65 @@
   align-items: center;
   justify-content: center;
   padding: 1rem;
-  background: rgba(0, 0, 0, 0.72);
+  background: rgba(0, 0, 0, 0.75);
   backdrop-filter: blur(6px);
 }
 
 .modal-card {
   background: linear-gradient(150deg, #002e14 0%, #001208 100%);
   border: 1.5px solid rgba(0, 166, 81, 0.4);
-  border-radius: 18px;
-  padding: 2.5rem;
-  max-width: 660px;
+  border-radius: clamp(14px, 1.2vw, 22px);
+  padding: clamp(1.8rem, 2.5vw, 3.5rem);
+  max-width: min(760px, 90vw);
   width: 100%;
   box-shadow:
     0 0 0 1px rgba(0, 166, 81, 0.12),
-    0 0 60px rgba(0, 166, 81, 0.18),
-    0 24px 60px rgba(0, 0, 0, 0.7);
+    0 0 70px rgba(0, 166, 81, 0.2),
+    0 28px 70px rgba(0, 0, 0, 0.7);
   animation: modal-in 0.28s ease forwards;
 }
 
 .modal-header {
-  margin-bottom: 1.2rem;
+  margin-bottom: clamp(0.9rem, 1.2vh, 1.6rem);
 }
 
 .modal-box-label {
   display: inline-block;
   font-family: 'ProximaNova', sans-serif;
   font-weight: 300;
-  font-size: 0.78rem;
+  font-size: clamp(0.72rem, 0.8vw, 1rem);
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--saf-green);
   background: rgba(0, 166, 81, 0.12);
   border: 1px solid rgba(0, 166, 81, 0.3);
   border-radius: 50px;
-  padding: 0.3rem 0.9rem;
+  padding: 0.3rem 1rem;
 }
 
 .modal-question {
   font-family: 'ProximaNova', sans-serif;
   font-weight: 700;
-  font-size: clamp(1.05rem, 2.5vw, 1.45rem);
+  /* 1920px → 1.8vw = 34.6px, capped at 2rem = 32px */
+  font-size: clamp(1.1rem, 1.8vw, 2rem);
   color: #ffffff;
   line-height: 1.45;
-  margin-bottom: 1.8rem;
+  margin-bottom: clamp(1.4rem, 2.2vh, 2.5rem);
 }
 
 /* Answer options */
 .modal-options {
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
+  gap: clamp(0.5rem, 0.8vh, 0.85rem);
 }
 
 .option-btn {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: clamp(0.8rem, 1vw, 1.4rem);
   width: 100%;
-  padding: 0.85rem 1.25rem;
+  padding: clamp(0.75rem, 1.1vh, 1.1rem) clamp(1rem, 1.2vw, 1.6rem);
   background: rgba(255, 255, 255, 0.06);
   border: 1.5px solid rgba(255, 255, 255, 0.15);
   border-radius: 10px;
@@ -353,7 +353,6 @@
   transform: translateX(2px) scale(0.99);
 }
 
-/* Result states */
 .option-correct {
   background: rgba(0, 166, 81, 0.28) !important;
   border-color: var(--saf-green) !important;
@@ -371,9 +370,9 @@
 .option-letter {
   font-family: 'ProximaNova', sans-serif;
   font-weight: 700;
-  font-size: 0.95rem;
+  font-size: clamp(0.9rem, 1vw, 1.2rem);
   color: var(--saf-gold);
-  width: 1.25rem;
+  width: clamp(1.1rem, 1.4vw, 1.7rem);
   flex-shrink: 0;
   line-height: 1;
 }
@@ -381,19 +380,19 @@
 .option-text {
   font-family: 'ProximaNova', sans-serif;
   font-weight: 300;
-  font-size: 0.95rem;
+  font-size: clamp(0.9rem, 1vw, 1.2rem);
   color: #ffffff;
   line-height: 1.35;
 }
 
 /* Result message */
 .modal-result {
-  margin-top: 1.2rem;
-  padding: 0.7rem 1.2rem;
+  margin-top: clamp(0.9rem, 1.2vh, 1.5rem);
+  padding: clamp(0.6rem, 0.8vh, 0.9rem) 1.2rem;
   border-radius: 8px;
   font-family: 'ProximaNova', sans-serif;
   font-weight: 700;
-  font-size: 0.95rem;
+  font-size: clamp(0.9rem, 1vw, 1.15rem);
   letter-spacing: 0.03em;
   text-align: center;
 }
@@ -413,27 +412,27 @@
 /* Continue button */
 .continue-btn {
   display: block;
-  margin-top: 1.4rem;
+  margin-top: clamp(1rem, 1.5vh, 1.8rem);
   width: 100%;
-  padding: 0.85rem 2rem;
+  padding: clamp(0.8rem, 1.1vh, 1.2rem) 2rem;
   background: var(--saf-green);
   border: none;
   border-radius: 10px;
   color: #ffffff;
   font-family: 'ProximaNova', sans-serif;
   font-weight: 700;
-  font-size: 1rem;
+  font-size: clamp(0.9rem, 1vw, 1.2rem);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   cursor: pointer;
   transition: background 0.18s, transform 0.14s, box-shadow 0.18s;
-  box-shadow: 0 4px 16px rgba(0, 166, 81, 0.35);
+  box-shadow: 0 4px 18px rgba(0, 166, 81, 0.4);
 }
 
 .continue-btn:hover {
   background: #00c55f;
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 166, 81, 0.45);
+  box-shadow: 0 8px 26px rgba(0, 166, 81, 0.5);
 }
 
 .continue-btn:active {
@@ -441,10 +440,10 @@
 }
 
 /* --------------------------------------------------------------------------
-   GAME COMPLETE SCREEN
+   GAME COMPLETE
    -------------------------------------------------------------------------- */
 @keyframes complete-in {
-  from { opacity: 0; transform: translateY(20px) scale(0.95); }
+  from { opacity: 0; transform: translateY(24px) scale(0.95); }
   to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
@@ -453,18 +452,18 @@
 }
 
 .game-complete-card {
-  background: linear-gradient(135deg, rgba(0, 50, 20, 0.9), rgba(0, 20, 8, 0.95));
+  background: linear-gradient(135deg, rgba(0, 50, 20, 0.92), rgba(0, 20, 8, 0.96));
   border: 2px solid rgba(0, 166, 81, 0.5);
-  border-radius: 20px;
-  padding: 2.5rem 3rem;
+  border-radius: 22px;
+  padding: clamp(2rem, 3vh, 3.5rem) clamp(2rem, 4vw, 5rem);
   text-align: center;
-  box-shadow: 0 0 60px rgba(0, 166, 81, 0.25), 0 20px 50px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 0 70px rgba(0, 166, 81, 0.28), 0 24px 55px rgba(0, 0, 0, 0.6);
 }
 
 .game-complete-title {
   font-family: 'ProximaNova', sans-serif;
   font-weight: 700;
-  font-size: clamp(1.4rem, 3vw, 2rem);
+  font-size: clamp(1.5rem, 3vw, 3rem);
   color: var(--saf-gold);
   letter-spacing: 0.06em;
   margin-bottom: 0.6rem;
@@ -473,9 +472,9 @@
 .game-complete-score {
   font-family: 'ProximaNova', sans-serif;
   font-weight: 300;
-  font-size: clamp(1rem, 2vw, 1.2rem);
+  font-size: clamp(1rem, 1.6vw, 1.6rem);
   color: rgba(255, 255, 255, 0.85);
-  margin-bottom: 1.8rem;
+  margin-bottom: clamp(1.5rem, 2.5vh, 2.5rem);
 }
 
 .game-complete-score strong {
@@ -484,14 +483,14 @@
 }
 
 .restart-btn {
-  padding: 0.8rem 2.5rem;
+  padding: clamp(0.7rem, 1vh, 1rem) clamp(2rem, 3vw, 3.5rem);
   background: transparent;
   border: 2px solid var(--saf-green);
   border-radius: 10px;
   color: var(--saf-green);
   font-family: 'ProximaNova', sans-serif;
   font-weight: 700;
-  font-size: 0.95rem;
+  font-size: clamp(0.9rem, 1vw, 1.1rem);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   cursor: pointer;
@@ -505,64 +504,8 @@
 }
 
 /* --------------------------------------------------------------------------
-   RESPONSIVE
-   -------------------------------------------------------------------------- */
-
-/* Tablet */
-@media (max-width: 860px) {
-  .boxes-grid {
-    max-width: 100%;
-    gap: 0.9rem;
-  }
-
-  .box-index-badge {
-    width: 22px;
-    height: 22px;
-    font-size: 0.65rem;
-    top: -6px;
-    left: -6px;
-  }
-
-  .modal-card {
-    padding: 1.8rem;
-  }
-}
-
-/* Mobile — switch to 2-column layout so boxes remain touchable */
-@media (max-width: 560px) {
-  .boxes-grid {
-    grid-template-columns: repeat(2, 1fr);
-    max-width: 320px;
-    gap: 1rem;
-  }
-
-  .box-index-badge {
-    width: 24px;
-    height: 24px;
-    font-size: 0.7rem;
-    top: -7px;
-    left: -7px;
-  }
-
-  .modal-card {
-    padding: 1.4rem;
-    border-radius: 14px;
-  }
-
-  .modal-question {
-    font-size: 1rem;
-  }
-
-  .option-btn {
-    padding: 0.75rem 1rem;
-  }
-}
-
-/* ==========================================================================
    CONFIRMATION MODAL
-   ========================================================================== */
-
-/* Card entrance: slams down from above with a slight bounce */
+   -------------------------------------------------------------------------- */
 @keyframes confirm-card-in {
   0%   { opacity: 0; transform: scale(1.18) translateY(-30px); }
   55%  { opacity: 1; transform: scale(0.96) translateY(4px); }
@@ -570,7 +513,6 @@
   100% { transform: scale(1) translateY(0); }
 }
 
-/* Box image gentle suspense pulse */
 @keyframes box-pulse {
   0%, 100% {
     transform: scale(1);
@@ -578,17 +520,16 @@
   }
   50% {
     transform: scale(1.06);
-    filter: drop-shadow(0 0 40px rgba(0, 166, 81, 1)) drop-shadow(0 0 70px rgba(0, 220, 100, 0.45));
+    filter: drop-shadow(0 0 40px rgba(0, 166, 81, 1))
+            drop-shadow(0 0 70px rgba(0, 220, 100, 0.45));
   }
 }
 
-/* Rotating glow ring behind box */
 @keyframes ring-spin {
   from { transform: translate(-50%, -50%) rotate(0deg); }
   to   { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
-/* BOX N text slides up */
 @keyframes box-name-in {
   from { opacity: 0; transform: translateY(16px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -609,43 +550,42 @@
 .confirm-card {
   background: linear-gradient(160deg, #003318 0%, #001509 60%, #000d05 100%);
   border: 2px solid rgba(0, 166, 81, 0.55);
-  border-radius: 22px;
-  padding: 2.8rem 3rem 2.4rem;
-  max-width: 440px;
+  border-radius: clamp(16px, 1.5vw, 26px);
+  padding: clamp(2rem, 3vh, 3.5rem) clamp(2rem, 3vw, 4rem) clamp(1.8rem, 2.5vh, 3rem);
+  max-width: min(520px, 90vw);
   width: 100%;
   text-align: center;
   box-shadow:
     0 0 0 1px rgba(0, 166, 81, 0.15),
-    0 0 80px rgba(0, 166, 81, 0.22),
-    0 30px 70px rgba(0, 0, 0, 0.75);
+    0 0 90px rgba(0, 166, 81, 0.24),
+    0 34px 80px rgba(0, 0, 0, 0.78);
   animation: confirm-card-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 .confirm-eyebrow {
   font-family: 'ProximaNova', sans-serif;
   font-weight: 300;
-  font-size: 0.72rem;
+  font-size: clamp(0.7rem, 0.75vw, 0.95rem);
   letter-spacing: 0.28em;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.5);
-  margin-bottom: 1.6rem;
+  margin-bottom: clamp(1.2rem, 2vh, 2rem);
 }
 
-/* ---- Box stage (image + glow ring + number badge) ---- */
+/* Box stage */
 .confirm-box-stage {
   position: relative;
-  width: 160px;
-  height: 160px;
-  margin: 0 auto 1.4rem;
+  width: clamp(140px, 12vw, 200px);
+  height: clamp(140px, 12vw, 200px);
+  margin: 0 auto clamp(1rem, 1.8vh, 1.8rem);
 }
 
-/* Rotating conic-gradient ring behind the box */
 .confirm-glow-ring {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 210px;
-  height: 210px;
+  width: calc(clamp(140px, 12vw, 200px) * 1.35);
+  height: calc(clamp(140px, 12vw, 200px) * 1.35);
   border-radius: 50%;
   background: conic-gradient(
     transparent 0deg,
@@ -658,9 +598,8 @@
   );
   animation: ring-spin 2.4s linear infinite;
   transform: translate(-50%, -50%);
-  /* mask so ring doesn't cover the box center */
-  -webkit-mask: radial-gradient(circle, transparent 62px, black 63px);
-  mask: radial-gradient(circle, transparent 62px, black 63px);
+  -webkit-mask: radial-gradient(circle, transparent 44%, black 45%);
+  mask: radial-gradient(circle, transparent 44%, black 45%);
 }
 
 .confirm-box-img {
@@ -676,50 +615,50 @@
 
 .confirm-box-badge {
   position: absolute;
-  top: -10px;
-  right: -10px;
+  top: clamp(-8px, -0.6vw, -12px);
+  right: clamp(-8px, -0.6vw, -12px);
   z-index: 2;
-  width: 34px;
-  height: 34px;
+  width: clamp(30px, 2.4vw, 46px);
+  height: clamp(30px, 2.4vw, 46px);
   border-radius: 50%;
   background: var(--saf-gold);
   color: #1a1400;
   font-family: 'ProximaNova', sans-serif;
   font-weight: 700;
-  font-size: 0.85rem;
+  font-size: clamp(0.75rem, 1vw, 1.1rem);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.55);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.55);
 }
 
-/* ---- Text ---- */
 .confirm-box-name {
   font-family: 'ProximaNova', sans-serif;
   font-weight: 700;
-  font-size: clamp(2rem, 7vw, 3rem);
+  /* 1920px → 5vw = 96px, capped at 4.5rem = 72px */
+  font-size: clamp(2.2rem, 5vw, 4.5rem);
   color: var(--saf-gold);
   letter-spacing: 0.15em;
-  text-shadow: 0 0 30px rgba(255, 215, 0, 0.5), 0 2px 6px rgba(0, 0, 0, 0.6);
+  text-shadow: 0 0 36px rgba(255, 215, 0, 0.55), 0 2px 8px rgba(0, 0, 0, 0.6);
   line-height: 1;
-  margin-bottom: 0.6rem;
+  margin-bottom: 0.5rem;
   animation: box-name-in 0.4s 0.2s ease both;
 }
 
 .confirm-question-text {
   font-family: 'ProximaNova', sans-serif;
   font-weight: 300;
-  font-size: 0.95rem;
-  color: rgba(255, 255, 255, 0.65);
+  font-size: clamp(0.88rem, 1vw, 1.15rem);
+  color: rgba(255, 255, 255, 0.62);
   letter-spacing: 0.03em;
-  margin-bottom: 2rem;
+  margin-bottom: clamp(1.5rem, 2.5vh, 2.5rem);
 }
 
-/* ---- Action buttons ---- */
+/* Confirm buttons */
 .confirm-actions {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: clamp(0.6rem, 0.9vh, 1rem);
 }
 
 .confirm-yes,
@@ -729,11 +668,11 @@
   justify-content: center;
   gap: 0.6rem;
   width: 100%;
-  padding: 0.9rem 1.5rem;
+  padding: clamp(0.8rem, 1.1vh, 1.2rem) 1.5rem;
   border-radius: 12px;
   font-family: 'ProximaNova', sans-serif;
   font-weight: 700;
-  font-size: 1rem;
+  font-size: clamp(0.9rem, 1vw, 1.15rem);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   cursor: pointer;
@@ -744,18 +683,16 @@
   background: var(--saf-green);
   border: none;
   color: #ffffff;
-  box-shadow: 0 4px 20px rgba(0, 166, 81, 0.45);
+  box-shadow: 0 4px 22px rgba(0, 166, 81, 0.45);
 }
 
 .confirm-yes:hover {
   background: #00c55f;
   transform: translateY(-3px);
-  box-shadow: 0 8px 28px rgba(0, 166, 81, 0.6);
+  box-shadow: 0 8px 30px rgba(0, 166, 81, 0.6);
 }
 
-.confirm-yes:active {
-  transform: translateY(0);
-}
+.confirm-yes:active { transform: translateY(0); }
 
 .confirm-no {
   background: transparent;
@@ -769,30 +706,44 @@
   transform: translateY(-2px);
 }
 
-.confirm-no:active {
-  transform: translateY(0);
-}
+.confirm-no:active { transform: translateY(0); }
 
 .confirm-btn-icon {
   font-size: 0.85rem;
   opacity: 0.85;
 }
 
-/* ---- Responsive ---- */
-@media (max-width: 480px) {
+/* --------------------------------------------------------------------------
+   RESPONSIVE — scale down below 1024px
+   -------------------------------------------------------------------------- */
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .boxes-grid {
+    max-width: 95vw;
+    gap: 0.9rem;
+  }
+}
+
+/* Mobile — 2-column grid so boxes stay touchable */
+@media (max-width: 560px) {
+  .boxes-grid {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 340px;
+    gap: 1rem;
+  }
+
+  .modal-card {
+    padding: 1.4rem;
+    border-radius: 14px;
+  }
+
   .confirm-card {
     padding: 2rem 1.5rem 1.8rem;
   }
 
-  .confirm-box-stage {
-    width: 130px;
-    height: 130px;
-  }
-
   .confirm-glow-ring {
-    width: 175px;
-    height: 175px;
-    -webkit-mask: radial-gradient(circle, transparent 50px, black 51px);
-    mask: radial-gradient(circle, transparent 50px, black 51px);
+    -webkit-mask: radial-gradient(circle, transparent 42%, black 43%);
+    mask: radial-gradient(circle, transparent 42%, black 43%);
   }
 }
