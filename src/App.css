@@ -747,3 +747,52 @@
     mask: radial-gradient(circle, transparent 42%, black 43%);
   }
 }
+
+/* --------------------------------------------------------------------------
+   FETCH STATE — loading spinner & error card
+   -------------------------------------------------------------------------- */
+.fetch-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(1rem, 2vw, 1.5rem);
+  padding: clamp(3rem, 8vh, 6rem) 0;
+}
+
+.fetch-spinner {
+  width: clamp(2.5rem, 4vw, 3.5rem);
+  height: clamp(2.5rem, 4vw, 3.5rem);
+  border: 3px solid rgba(0, 166, 81, 0.2);
+  border-top-color: var(--saf-green);
+  border-radius: 50%;
+  animation: fetch-spin 0.75s linear infinite;
+}
+
+@keyframes fetch-spin {
+  to { transform: rotate(360deg); }
+}
+
+.fetch-text {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: clamp(0.9rem, 1.5vw, 1.1rem);
+  letter-spacing: 0.06em;
+}
+
+.fetch-error {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: clamp(0.9rem, 1.5vw, 1.05rem);
+  text-align: center;
+  max-width: 42ch;
+  line-height: 1.6;
+}
+
+/* Smooth entrance for the boxes grid after questions load */
+.boxes-grid {
+  animation: boxes-in 0.45s ease both;
+}
+
+@keyframes boxes-in {
+  from { opacity: 0; transform: translateY(0.6rem); }
+  to   { opacity: 1; transform: translateY(0); }
+}
