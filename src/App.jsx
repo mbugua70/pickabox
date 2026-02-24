@@ -119,9 +119,9 @@ export default function App() {
   return (
     <>
     {/* Reset button — outside game-container so fixed positioning is never clipped */}
-    <button className="reset-btn" onClick={handleResetRequest}>
+    {/* <button className="reset-btn" onClick={handleResetRequest}>
       ↺ Reset
-    </button>
+    </button> */}
 
     <div className="game-container">
       {/* The ::before pseudo-element in CSS handles the blurred background image */}
