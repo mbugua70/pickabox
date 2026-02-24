@@ -134,7 +134,7 @@ export default function App() {
             <p className="game-subtitle">Choose a box to reveal your question</p>
           </div>
 
-          {answeredCount > 0 && !isGameComplete && (
+          {/* {answeredCount > 0 && !isGameComplete && (
             <div className="score-tracker">
               <div className="score-item score-correct">
                 <span className="score-num">{correctCount}</span>
@@ -146,7 +146,7 @@ export default function App() {
                 <span className="score-label">Answered</span>
               </div>
             </div>
-          )}
+          )} */}
         </header>
 
         {isLoading && (
