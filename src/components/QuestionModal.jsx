@@ -38,6 +38,13 @@ export default function QuestionModal({ question, onAnswer, onClose }) {
         <div className="modal-question-section">
           <div className="modal-header">
             <span className="modal-box-label">Box {question.id}</span>
+            {question.points && (
+              <span className="modal-points-badge">
+                <span className="modal-points-star">&#9733;</span>
+                <span className="modal-points-value">{question.points}</span>
+                <span className="modal-points-label">pts</span>
+              </span>
+            )}
           </div>
           <p id="modal-question" className="modal-question">
             {question.question}

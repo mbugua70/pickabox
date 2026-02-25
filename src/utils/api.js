@@ -17,6 +17,7 @@ function transformQuestion(apiQuestion, index) {
     question_id: apiQuestion.question_id, // original API id for open_box calls
     box_status: apiQuestion.box_status,   // "open" | "disabled"
     question: apiQuestion.question_title,
+    points: apiQuestion.points_displayed, // points awarded for this question
     answers,
     correct,
   }

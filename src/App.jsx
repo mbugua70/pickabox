@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useState, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import Box from './components/Box'
@@ -105,7 +106,7 @@ export default function App() {
       setBoxStates({})
       await refetch()
     } catch (e) {
-      console.error('Reset failed:', e)
+      // console.error('Reset failed:', e)
     } finally {
       setIsResetting(false)
       setShowResetConfirm(false)
